@@ -1,0 +1,156 @@
+---
+import type { GetStaticPaths } from 'astro';
+import MainLayout from '../../Layouts/MainLayout.astro';
+import { getPokemons } from '../../service/pokemonApi';
+import { Icon } from 'astro-icon/components';
+
+// const name = 'bulbasaur';
+export const getStaticPaths = (async () => {
+  const { data } = await getPokemons({ limit: 50 });
+  return data.map(it => {
+    return {
+      params: { name: it.name },
+      props: { img: it.img, id: it.id }
+    }
+  });
+}) satisfies GetStaticPaths;
+
+const { name } = Astro.params;
+const { img, id } = Astro.props;
+---
+
+<MainLayout title=`${name} Pokemon`>
+  <div class='title' data-name={name} data-id={id} id='title-information'>
+    <h2>{id}</h2>
+    <h2>{name}</h2>
+  </div>
+  <div class='card'>
+    <div class='card--image'>
+      <img src={img} alt={name} transition:name={`${name}-image`}>
+    </div>
+    <div class='button-action'>
+      <a onclick='history.back()'>
+        <Icon name='back-row'/>
+      </a>
+      <button class='button--like-action' id='button-favorite'>
+        <Icon data-outline name='heart-outline' />
+        <Icon data-fill class='hidden' name='heart-fill' />
+      </button>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // import { togglePokemonFavorite, getPokemonStorage } from '../../util/saveInLocalStorage';
+  const { togglePokemonFavorite, getPokemonStorage } = await import('../../util/saveInLocalStorage');
+  const toggleLike = () => {
+    const buttonFavorite = document.querySelector<HTMLButtonElement>('#button-favorite')
+
+    if (!buttonFavorite) return;
+
+    const information = document.querySelector<HTMLDivElement>('#title-information');
+    const name = information?.dataset['name'] || '';
+    const id  = information?.dataset['id'] || '';
+    const heart_outline = buttonFavorite.querySelector<HTMLElement>('[data-outline]')
+    const heart_fill = buttonFavorite.querySelector<HTMLElement>('[data-fill]')
+    const hasLikePokemon = getPokemonStorage(id);
+
+    if (hasLikePokemon) {
+      console.log('Ya tiene un like!!')
+      heart_outline?.classList.add('hidden');
+      heart_fill?.classList.remove('hidden');
+    }
+
+    buttonFavorite.addEventListener('click', () => {
+      heart_outline?.classList.toggle('hidden');
+      heart_fill?.classList.toggle('hidden');
+      togglePokemonFavorite({ id, name });
+      console.log({ name, id })
+    })
+  }
+  document.addEventListener('astro:page-load', toggleLike);
+</script>
+
+<style>
+  .title {
+    max-width: 100%;
+    padding: 1.5rem;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.45);
+    justify-content: space-between;
+    & > h2:first-child {
+      color: aqua;
+    }
+    & > h2 {
+      margin: 0;
+      text-transform: uppercase;
+    }
+  }
+  .card {
+  max-width: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 35px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 0 0 20px 20px;
+  background-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+
+.card--image {
+  display: flex;
+  justify-content: center;
+}
+
+.card--image img {
+  max-width: 100%;
+  min-height: 60%;
+  object-fit: cover;
+}
+
+.title--card {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.button-action {
+  display: flex;
+  justify-content: space-around;
+}
+
+.card-footer {
+  font-size: 0.65em;
+  color: #446;
+}
+a {
+  cursor: pointer;
+  text-decoration: underline;
+
+  & > svg {
+    width: 3em;
+    height: 3em;
+  }
+}
+
+.button--like-action {
+  background: #ffffff00;
+  border-color: transparent;
+  cursor: pointer;
+
+  & > svg {
+    width: 3em;
+    height: 3em;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+</style>
+

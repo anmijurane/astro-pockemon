@@ -1,0 +1,38 @@
+---
+import type { GetStaticPaths } from "astro";
+import Card from '../../components/Card.astro';
+import ButtonsPagination from '../../components/ButtonsPagination.astro';
+import MainLayout from '../../Layouts/MainLayout.astro';
+
+import { getPokemons } from '../../service/pokemonApi';
+
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const { data } = await getPokemons({ limit: 50 });
+  return paginate(data,  { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { data } = page;
+---
+
+<MainLayout title='Inicio'>
+	<div class="container">
+		{data.map(pokemon => <Card {...pokemon} />)}
+	</div>
+  <div class="buttons">
+    <ButtonsPagination
+      pathNextPage={page.url.next}
+      pathPrevPage={page.url.prev}
+      currentPage={`${page.currentPage}`}
+    />
+  </div>
+</MainLayout>
+
+<style>
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+</style>

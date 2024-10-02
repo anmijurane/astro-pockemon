@@ -1,0 +1,57 @@
+.container--favorite {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card-container-fav {
+  --blur: 16px;
+  --size: clamp(200px, 30vmin, 400px);
+  /* width: 50%; */
+  margin: 1rem;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  color: #000;
+  transform: translateZ(0);
+  background-color: hsl(261.92deg 42.59% 48.76% / 41%);
+}
+
+.card-fav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-title_fav {
+  background-color: hsla(215, 43%, 49%, 0.41);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & > p {
+    color: whitesmoke;
+  }
+
+  & > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+.no-favorites {
+  display: flex;
+  flex-direction: column;
+  & > a {
+    color: whitesmoke;
+  }
+}

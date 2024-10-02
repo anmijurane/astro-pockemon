@@ -1,0 +1,17 @@
+---
+import MainLayout from "../../Layouts/MainLayout.astro";
+import { Counter } from "../../components/Counter";
+---
+
+<MainLayout title="Islas">
+  {/*@ts-ignore*/}
+  <Counter
+    transition:persist="counter"
+    transition:persist-props
+    client:load
+    initialValue={20}
+  />
+
+  <hr />
+  Este es otro titulo!
+</MainLayout>

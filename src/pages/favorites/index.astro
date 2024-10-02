@@ -1,0 +1,13 @@
+---
+import MainLayout from "../../Layouts/MainLayout.astro";
+import { FavoritesPage } from "../../components/FavoritesPage";
+
+const initialValue = 50;
+
+---
+
+<MainLayout title="Favorites">
+  <FavoritesPage
+    client:only="solid-js"
+  />
+</MainLayout>

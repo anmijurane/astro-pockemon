@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths } from "astro";
+import MainLayout from "../../Layouts/MainLayout.astro";
+import { getPokemons } from "../../service/pokemonApi";
+
+// const name = 'bulbasaur';
+export const getStaticPaths = (async () => {
+  const { data } = await getPokemons({ limit: 50 });
+  return data.map(it => ({
+    params: { name: it.name },
+    props: { img: it.img }
+  }));
+}) satisfies GetStaticPaths;
+
+const { name } = Astro.params;
+const { img } = Astro.props;
+
+---
+<link rel="stylesheet" href="../../components/card-style.css">
+<MainLayout title=`${name} Pokemon`>
+  <div class="card">
+    <div class="card--image">
+      <img src={img} alt={name} transition:name={`${name}-image`}>
+    </div>
+    <div class="button-action">
+      <p class="title--card">{name}</p>
+      <a onclick="history.back()">Regresar</a>
+    </div>
+  </div>
+</MainLayout>
