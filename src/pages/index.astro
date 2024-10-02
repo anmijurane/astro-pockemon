@@ -1,10 +1,17 @@
 ---
+import Card from "../components/Card.astro";
+import MainLayout from "../Layouts/MainLayout.astro";
 
+import { getPokemons } from "../service/pokemonApi";
+
+const { data } = await getPokemons({ limit: 10 });
 ---
 
-<div class="container">
-	<h1>Funciona</h1>
-</div>
+<MainLayout title="Inicio">
+	<div class="container">
+		{data.map((pokemon) => <Card {...pokemon} />)}
+	</div>
+</MainLayout>
 
 <style>
 	.container {
