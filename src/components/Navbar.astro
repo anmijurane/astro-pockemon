@@ -1,0 +1,70 @@
+---
+const itemsRouteLayout = [
+  { title: 'Inicio', path: '/', isActive: false },
+  { title: 'Paginados', path: '/pokemons/1', isActive: false },
+  { title: 'Favoritos', path: '/favorites', isActive: false },
+  { title: 'Islas', path: '/islands', isActive: false },
+];
+
+const { pathname } = Astro.url;
+
+const routeItems = itemsRouteLayout.map(item => {
+  return item.path === pathname || pathname.startsWith('pokemons')
+    ? ({ ...item, isActive: true }) : item
+})
+
+---
+
+<style>
+  .container--navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    background-color: #543a83;
+  }
+  a {
+    text-decoration: none;
+    text-align: center;
+    font-size: x-large;
+    color: white;
+    padding: 0 10px;
+  }
+  .is-active {
+    background-color: #ac9dc1;
+  }
+  .botder-ghost {
+    width: 80%;
+    height: 3px;
+  }
+  span {
+    color: aqua;
+    margin: 0px 10px;
+    cursor: default;
+  }
+  h2 {
+    font-size: xx-large;
+  }
+  .container--navbar {
+    display: flex;
+  }
+
+</style>
+
+<div class="container--navbar">
+  {routeItems.map((item, idx) => (
+    <div class="item">
+      <div class="container--anchor">
+        <a
+          href={item.path}
+        >
+          {item.title}
+        </a>
+        {idx+1 < routeItems.length && <span>|</span>}
+      </div>
+      {item.isActive
+        ? <div transition:name="active-line" class='botder-ghost is-active' />
+        : <div class='botder-ghost' />}
+    </div>
+  ))}
+</div>
